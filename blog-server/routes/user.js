@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
+const MongoClient = require('mongodb').MongoClient;
+
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.render('user', { title: 'Express' });
 });
 
 module.exports = router;

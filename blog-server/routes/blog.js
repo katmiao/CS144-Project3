@@ -1,16 +1,21 @@
 let express = require('express');
 let router = express.Router();
 let commonmark = require("commonmark");
+const assert = require('assert');
 
 // MongoDB connection pooling (not sure if this actually goes here)
 let MongoClient = require('mongodb').MongoClient;
-const MONGODB_URI = 'mongo-uri';
+
+// Use '192...' if using Docker toolbox, 'localhost' if not
+const MONGODB_URI = 'mongodb://192.168.99.100:27017/BlogServer';
+//const MONGODB_URI = 'mongodb://localhost:27017/BlogServer';
 let db;
 
 // Initialize connection once, reuse the database object 
-MongoClient.connect(MONGODB_URI, function(err, database) {
-  db = database;
-  console.log("Initialized MongoDB connection.")
+MongoClient.connect(MONGODB_URI, function(err, client) {
+  assert.equal(null, err);
+  db = client.db("BlogServer");
+  console.log("Initialized MongoDB connection.");
 });
 
 // GET blog post with postid written by username
@@ -55,6 +60,10 @@ router.get("/:username/:postid", function(req, res) {
     		}
   		}
   	);
+})
+
+router.get("/:username", function(req, res) {
+	res.render('user', { title: 'Express' });
 })
 
 module.exports = router;
