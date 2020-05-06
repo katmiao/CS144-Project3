@@ -15,6 +15,7 @@ router.get("/:username/:postid", async function(req, res) {
 	if (isNaN(postid)) {
 		console.log("Invalid postid: " + postid);
 		res.sendStatus(400);
+		res.redirect("/error");
 		return;
 	}
 
@@ -29,6 +30,7 @@ router.get("/:username/:postid", async function(req, res) {
   		if (post == null){
   			console.log("Couldn't find blogpost with username=" + username + " postid=" + postid);
     		res.status(404);
+    		res.redirect("/error");
     		return;
   		} else {
   			var reader = new commonmark.Parser();
