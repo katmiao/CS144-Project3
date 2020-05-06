@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var blogRouter = require('./routes/blog');
+var loginRouter = require('./routes/login');
 var mongoConn = require('./mongoConn');
 
 var app = express();
@@ -25,6 +26,7 @@ mongoConn.initDbConn(function(err)
   // routes
   app.use('/', indexRouter);
   app.use('/blog', blogRouter);
+  app.use('/login', loginRouter);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
