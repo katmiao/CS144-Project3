@@ -7,7 +7,7 @@ let mongoConn = require("../mongoConn");
 let db;
 
 // GET blog post with postid written by username
-router.get("/:username/:postid", function(req, res) {
+router.get("/:username/:postid", async function(req, res) {
 	let username = req.params.username;
 	let postid = req.params.postid;
 
@@ -21,34 +21,25 @@ router.get("/:username/:postid", function(req, res) {
 	console.log("Getting postid=" + postid + " for username=" + username);
 	postid = parseInt(postid);
 
-	// TODO - figure this out
-	// TypeError: Cannot read property 'collection' of undefined
-  	db.collection("Posts").findOne({$and: [{"username":username, "postid":postid}]}, 
-  		function(err, doc) {
-    		if (err){
-    			throw err;
-    		} 
+  	mongoConn.getDb(async function (db)
+  	{
+  		let post = await db.collection("Posts").findOne({$and: [{"username":username, "postid":postid}]});
+  		console.log(post);
 
-    		else if (doc) {
-    			var reader = new commonmark.Parser();
-				var writer = new commonmark.HtmlRenderer();
-				// parsed is a Node tree, rendered is a String
-				var parsedTitle = reader.parse(doc.title); 
-				var parsedBody = reader.parse(doc.body);
-				var renderedTitle = writer.render(parsedTitle); 
-				var renderedBody = writer.render(parsedBody);
-
-				res.render("oneBlogPost", 
-					{"title": doc.title, "markdownTitle": renderedTitle, "markdownBody": renderedBody});
-    		} 
-
-    		else {
-    			console.log("Couldn't find blogpost with username=" + username + " postid=" + postid);
-    			res.status(404);
-    		}
+  		if (post == null){
+  			console.log("Couldn't find blogpost with username=" + username + " postid=" + postid);
+    		res.status(404);
+    		return;
+  		} else {
+  			var reader = new commonmark.Parser();
+			var writer = new commonmark.HtmlRenderer();
+			var renderedTitle = writer.render(reader.parse(post.title)); 
+			var renderedBody = writer.render(reader.parse(post.body));
+			res.render("oneBlogPost", 
+				{"title": post.title, "markdownTitle": renderedTitle, "markdownBody": renderedBody});
   		}
-  	);
-})
+  	});
+});
 
 router.get("/:username", async function(req, res) {
 	let username = req.params.username;
