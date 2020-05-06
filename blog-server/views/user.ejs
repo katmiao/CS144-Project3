@@ -7,7 +7,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <title><%= title %></title>
     <style>
-        .postText { font-weight: normal; }
+        a { text-decoration: none; }
+        a:hover { text-decoration: none; color: white; }
+        .container { font-weight: normal; }
     </style>
 </head>
 <body>
@@ -19,8 +21,8 @@
                 <button class="btn btn-outline-primary" type="submit" name="action" value="open">New Post</button>
             </form>
         </div>
-        <table style="text-align: center; width: 100%;">
-            <tbody>
+        <table style="text-align: center; width: 100%;" class="table">
+            <thead>
                 <tr>
                     <th>Title</th>
                     <th>Body</th>
@@ -28,6 +30,8 @@
                     <th>Modified</th>
                     <th>&nbsp</th>
                 </tr>
+            </thead>
+            <tbody style="font-weight: lighter;">
                 <% for(let i = 0; i < posts.length; i++) { %>
                   <tr>
                     <th><%= posts[i].title %></th>
@@ -42,6 +46,7 @@
                 <% } %>
             </tbody>
         </table>
+        <a href="" class="btn btn-outline-primary" id="next">Next</a>
     </div>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

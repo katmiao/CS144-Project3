@@ -43,12 +43,36 @@ router.get("/:username/:postid", async function(req, res) {
   	});
 });
 
+function epochToString(epoch)
+{
+	let date = new Date(epoch);
+	let day = date.getDate();
+	let month = date.getMonth();
+	let year = date.getFullYear();
+	let hour = date.getHours();
+	let zeroHour = "";
+	let zeroDay = "";
+	let zeroMonth = "";
+	if(hour < 10)
+		zeroHour = "0";
+	if(day < 10)
+		zeroDay = "0";
+	if(month < 10)
+		zeroMonth = "0";
+	let minutes = date.getMinutes();
+	return `${zeroMonth}${month}/${zeroDay}${day}/${year} ${zeroHour}${hour}:${minutes}`;
+}
+
 router.get("/:username", async function(req, res) {
 	let username = req.params.username;
 	mongoConn.getDb(async function(db)
 	{
-		let posts = await db.collection("Posts").find({"username": username}).toArray();
-		console.log(posts[0].title);
+		let posts = await db.collection("Posts").find({"username": username}).sort({"postid": 1}).toArray();
+		for(let i = 0; i < posts.length; i++)
+		{
+			posts[i].created = epochToString(posts[i].created);
+			posts[i].modified = epochToString(posts[i].modified);
+		}
 		res.render('user', { title: `${username}'s Blog Posts`, posts: posts });
 	});
 });
