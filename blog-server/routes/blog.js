@@ -76,7 +76,7 @@ router.get("/:username", async function(req, res) {
 	mongoConn.getDb(async function(db)
 	{
 		// check if username exists
-		let exists = await db.collection("Posts")
+		let exists = await db.collection("Users")
 			.find({"username": username})
 			.limit(1)
 			.toArray();
