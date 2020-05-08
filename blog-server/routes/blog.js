@@ -3,9 +3,6 @@ let router = express.Router();
 let commonmark = require("commonmark");
 let mongoConn = require("../mongoConn");
 
-// this probably doesnt work anymore, use mongoConn.getDb(callback() {...})
-let db;
-
 // GET blog post with postid written by username
 router.get("/:username/:postid", async function(req, res) {
 	let username = req.params.username;
@@ -65,15 +62,61 @@ function epochToString(epoch)
 
 router.get("/:username", async function(req, res) {
 	let username = req.params.username;
+	let lastPostid = Number.MIN_SAFE_INTEGER;
+	if(req.query.start !== undefined)
+	{
+		lastPostid = parseInt(req.query.start, 10);
+		if(isNaN(lastPostid))
+		{
+			res.status(400).send("400 Invalid Request: the entered postid was invalid");
+			return;
+		}
+	}
+	
 	mongoConn.getDb(async function(db)
 	{
-		let posts = await db.collection("Posts").find({"username": username}).sort({"postid": 1}).toArray();
+		// check if username exists
+		let exists = await db.collection("Posts")
+			.find({"username": username})
+			.limit(1)
+			.toArray();
+
+		if(exists.length == 0)
+		{
+			res.status(404).send("404 Not Found: the entered username doesn't exist");
+			return;
+		}
+
+		let posts = await db.collection("Posts")
+			.find({"username": username, "postid": { $gt: lastPostid }})
+			.sort({"postid": 1})
+			.limit(5)
+			.toArray();
+		
 		for(let i = 0; i < posts.length; i++)
 		{
 			posts[i].created = epochToString(posts[i].created);
 			posts[i].modified = epochToString(posts[i].modified);
 		}
-		res.render('user', { title: `${username}'s Blog Posts`, posts: posts });
+
+		let hasNext = true;
+		if(posts.length < 5)
+			hasNext = false;  
+
+		let nextPostid;
+		if(posts.length == 0)
+			nextPostid = lastPostid;
+		else
+			nextPostid = posts[posts.length - 1].postid;
+		res.render('user', 
+			{ 
+				title: `${username}'s Blog Posts`, 
+				posts: posts, 
+				username: username,
+				nextPostid: nextPostid,
+				hasNext: hasNext
+			}
+		);
 	});
 });
 
