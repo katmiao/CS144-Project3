@@ -65,8 +65,11 @@ router.get("/:username", async function(req, res) {
 	let lastPostid = Number.MIN_SAFE_INTEGER;
 	if(req.query.start !== undefined)
 	{
-		lastPostid = parseInt(req.query.start, 10);
-		if(isNaN(lastPostid))
+		if(/^-?\d+$/.test(req.query.start))
+		{
+			lastPostid = parseInt(req.query.start, 10);
+		}
+		else 
 		{
 			res.status(400).send("400 Invalid Request: the entered postid was invalid");
 			return;
