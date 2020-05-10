@@ -1,24 +1,42 @@
 let express = require('express');
 let router = express.Router();
 let mongoConn = require("../mongoConn");
+let jwt = require('jsonwebtoken');
+
+const secretKey = "C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c";
+
+function authenticateUser(username, token)
+{
+    if(!token)
+    {
+        return false;
+    }
+
+    let decoded = jwt.verify(token, secretKey, { algorithms: ["HS256"]});
+    if(decoded.usr !== username)
+    {
+        return false;
+    }
+
+    return true;
+}
 
 // GET /api/:username
 router.get("/:username", async function(req, res) 
 {
     const username = req.params.username;
+    const token = req.cookies.JWT;
 
-    // TODO: AUTHENTICATE USER WITH COOKIE
+    // authenticate user
+    if(!authenticateUser(username, token))
+    {
+        res.status(401).send("401 Unauthorized: access to the resource is denied");
+        return;
+    }
 
     // find posts in the database
     mongoConn.getDb(async function(db)
     {
-        /*let exists = await db.collection("Users").findOne({"username": username});
-        if(exists === null)
-        {
-            res.status(404).send("404 Not Found: the entered username doesn't exist");
-            return;
-        }*/
-
         let posts = await db.collection("Posts")
             .find({"username": username})
             .toArray();
@@ -31,7 +49,15 @@ router.get("/:username", async function(req, res)
 router.get("/:username/:postid", async function(req, res) 
 {
     let { username, postid } = req.params;
-    
+    let token = req.cookies.JWT;
+
+    // authenticate user
+    if(!authenticateUser(username, token))
+    {
+        res.status(401).send("401 Unauthorized: access to the resource is denied");
+        return;
+    }
+
     // check if postid is valid
     if(/^-?\d+$/.test(postid))
     {
@@ -43,24 +69,15 @@ router.get("/:username/:postid", async function(req, res)
         return;
     }
 
-    // TODO: AUTHENTICATE USER WITH COOKIE
-
     // find post in database
     mongoConn.getDb(async function(db)
     {
-        /*let exists = await db.collection("Users").findOne({"username": username});
-        if(exists === null)
-        {
-            res.status(404).send("404 Not Found: the entered username doesn't exist");
-            return;
-        }*/
-
         let post = await db.collection("Posts")
             .findOne({"username": username, "postid": postid});
         
         if(post === null)
         {
-            res.status(404).send("404 Not Found: the entered postid doesn't exist");
+            res.status(404).send("404 Not Found: the entered username/postid combo doesn't exist");
             return;
         }
 
@@ -73,6 +90,14 @@ router.post("/:username/:postid", async function(req, res)
 {
     let { username, postid } = req.params;
     let { title, body } = req.body; 
+    let token = req.cookies.JWT;
+
+    // authenticate user
+    if(!authenticateUser(username, token))
+    {
+        res.status(401).send("401 Unauthorized: access to the resource is denied");
+        return;
+    }
 
     // check if the required parameters are supplied
     if(title === undefined || body === undefined)
@@ -91,8 +116,6 @@ router.post("/:username/:postid", async function(req, res)
         res.status(400).send("400 Bad Request: the entered postid is invalid");
         return;
     }
-
-    // AUTHENTICATE USER WITH COOKIE
 
     // go to database
     mongoConn.getDb(async function(db)
@@ -128,6 +151,14 @@ router.put("/:username/:postid", async function(req, res)
 {
     let { username, postid } = req.params;
     let { title, body } = req.body; 
+    let token = req.cookies.JWT;
+
+    // authenticate user
+    if(!authenticateUser(username, token))
+    {
+        res.status(401).send("401 Unauthorized: access to the resource is denied");
+        return;
+    }
 
     // check if the required parameters are supplied
     if(title === undefined || body === undefined)
@@ -146,8 +177,6 @@ router.put("/:username/:postid", async function(req, res)
         res.status(400).send("400 Bad Request: the entered postid is invalid");
         return;
     }
-
-    // AUTHENTICATE USER WITH COOKIE
 
     // go to database
     mongoConn.getDb(async function(db)
@@ -185,7 +214,15 @@ router.put("/:username/:postid", async function(req, res)
 router.delete("/:username/:postid", async function(req, res) 
 {
     let { username, postid } = req.params;
-    
+    let token = req.cookies.JWT;
+
+    // authenticate user
+    if(!authenticateUser(username, token))
+    {
+        res.status(401).send("401 Unauthorized: access to the resource is denied");
+        return;
+    }
+
     // check if postid is valid
     if(/^-?\d+$/.test(postid))
     {
@@ -196,8 +233,6 @@ router.delete("/:username/:postid", async function(req, res)
         res.status(400).send("400 Bad Request: the entered postid is invalid");
         return;
     }
-
-    // TODO: AUTHENTICATE USER WITH COOKIE
 
     // find post in database
     mongoConn.getDb(async function(db)

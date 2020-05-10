@@ -102,7 +102,7 @@ router.get("/:username", async function(req, res) {
 		}
 
 		let posts = await db.collection("Posts")
-			.find({"username": username, "postid": { $gt: lastPostid }})
+			.find({"username": username, "postid": { $gte: lastPostid }})
 			.sort({"postid": 1})
 			.limit(5)
 			.toArray();
@@ -117,11 +117,7 @@ router.get("/:username", async function(req, res) {
 		if(posts.length < 5)
 			hasNext = false;  
 
-		let nextPostid;
-		if(posts.length == 0)
-			nextPostid = lastPostid;
-		else
-			nextPostid = posts[posts.length - 1].postid;
+		let nextPostid = posts[posts.length - 1].postid + 1;
 		res.render('user', 
 			{ 
 				title: `${username}'s Blog Posts`, 

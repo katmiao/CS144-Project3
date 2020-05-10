@@ -64,12 +64,12 @@ router.post("/", async function(req, res)
 		    		"JWT", 
 		    		token, 
 		    		{} //{signed: true, httpOnly: true}
-		    	);
+				);
 
-		    	console.log("--- jwt & cookie success")
+		    	console.log("--- jwt & cookie success");
 
 		    	if (redirect == "") {
-		    		res.status(200).send("Authentication successful!")
+		    		res.status(200).send("200 OK: Authentication successful!")
 		    	}
 		    	else {
 		    		res.redirect(redirect)
