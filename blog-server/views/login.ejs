@@ -9,15 +9,15 @@
 </head>
 <body>
     <h1>Login</h1>
-    <form action="login" method="post">
-    	<input type="hidden" id="redirect" name="redirect" value='<%= redirect %>'>
+    <form action="/login" method="post">
+    	<input type="hidden" id="redirect" name="redirect" value="<%= redirect %>">
 
     	<label for="username">Username:</label><br>
   		<input type="text" id="username" name="username" value="<%= username %>"><br><br>
   		<label for="password">Password:</label><br>
   		<!-- maybe change this to type="password" -->
   		<input type="text" id="password" name="password" value="<%= password %>"><br><br>
-  		<button class="btn btn-outline-primary" type="submit" value="submit">Submit</button>
+  		<button class="btn btn-outline-primary" type="submit" value="Submit">Submit</button>
     </form>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

@@ -21,13 +21,24 @@ router.get("/:username/:postid", async function(req, res) {
 
   	mongoConn.getDb(async function (db)
   	{
-  		let post = await db.collection("Posts").findOne({$and: [{"username":username, "postid":postid}]});
-  		console.log(post);
+  		
+  		let exists = await db.collection("Users")
+			.find({"username": username})
+			.limit(1)
+			.toArray();
+
+		if(exists.length == 0)
+		{
+			res.status(404).send("404 Not Found: the entered username doesn't exist");
+			return;
+		}
+
+		let post = await db.collection("Posts").findOne({$and: [{"username":username, "postid":postid}]});
+  		console.log("Found post:" + post);
 
   		if (post == null){
   			console.log("Couldn't find blogpost with username=" + username + " postid=" + postid);
-    		res.status(404);
-    		res.redirect("/error");
+    		res.status(404).send("404 Not Found: the postid doesn't exist for this user");
     		return;
   		} else {
   			var reader = new commonmark.Parser();
