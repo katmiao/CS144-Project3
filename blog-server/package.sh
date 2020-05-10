@@ -180,9 +180,6 @@ else:
 posts2 = set([user2_7, user2_others])
 isright2 = True
 r4 = test_requests(gurl + 'blog/user2?start=3')
-f = open("output.txt", "w+")
-f.write(r4.text)
-f.close()
 for x in posts2:
     if r4.text.find(x) == -1:
         print(x)
@@ -365,7 +362,7 @@ kill `pgrep node`
 
 # remove temp files
 cd $DIR
-#rm -rf $TMP_DIR
+rm -rf $TMP_DIR
 
 echo "[SUCCESS] Created '$DIR/project3.zip', please submit it to CCLE."
 

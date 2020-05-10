@@ -27,10 +27,10 @@
             <tbody style="font-weight: lighter;">
                 <% for(let i = 0; i < posts.length; i++) { %>
                   <tr>
-                    <td><%= posts[i].title %></th>
-                    <td><%= posts[i].body %></th>
-                    <td><%= posts[i].created %></th>
-                    <td><%= posts[i].modified %></th>
+                    <td><%- posts[i].title %></th>
+                    <td><%- posts[i].body %></th>
+                    <td><%- posts[i].created %></th>
+                    <td><%- posts[i].modified %></th>
                   </tr>
                 <% } %>
             </tbody>
