@@ -117,7 +117,10 @@ router.get("/:username", async function(req, res) {
 		if(posts.length < 5)
 			hasNext = false;  
 
-		let nextPostid = posts[posts.length - 1].postid + 1;
+		let nextPostid = null;
+		if(hasNext)
+			nextPostid = posts[posts.length - 1].postid + 1;
+			
 		res.status(200).render('user', 
 			{ 
 				title: `${username}'s Blog Posts`, 

@@ -12,9 +12,19 @@ function authenticateUser(username, token)
         return false;
     }
 
-    let decoded = jwt.verify(token, secretKey, { algorithms: ["HS256"]});
-    if(decoded.usr !== username)
+    let decoded;
+    try
     {
+        decoded = jwt.verify(token, secretKey, { algorithms: ["HS256"]});
+        
+        if(decoded.usr !== username)
+        {
+            return false;
+        }
+    } 
+    catch(err)
+    {
+        console.log(err.message);
         return false;
     }
 
