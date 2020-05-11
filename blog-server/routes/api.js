@@ -98,6 +98,7 @@ router.get("/:username/:postid", async function(req, res)
 // POST /api/:username/:postid
 router.post("/:username/:postid", async function(req, res) 
 {
+    console.log(req.body);
     let { username, postid } = req.params;
     let { title, body } = req.body; 
     let token = req.cookies.JWT;
@@ -112,7 +113,7 @@ router.post("/:username/:postid", async function(req, res)
     // check if the required parameters are supplied
     if(title === undefined || body === undefined)
     {
-        res.status(400).send("400 Bad Request: request does not contain parameters title and/or body");
+        res.status(400).send("400 Bad Request: request was not formatted correctly or does not contain parameters title and/or body");
         return;
     }
     
@@ -173,7 +174,7 @@ router.put("/:username/:postid", async function(req, res)
     // check if the required parameters are supplied
     if(title === undefined || body === undefined)
     {
-        res.status(400).send("400 Bad Request: request does not contain parameters title and/or body");
+        res.status(400).send("400 Bad Request: request was not formatted correctly or does not contain parameters title and/or body");
         return;
     }
     

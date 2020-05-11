@@ -58,17 +58,20 @@ function epochToString(epoch)
 	let month = date.getMonth();
 	let year = date.getFullYear();
 	let hour = date.getHours();
+	let minutes = date.getMinutes();
 	let zeroHour = "";
 	let zeroDay = "";
 	let zeroMonth = "";
+	let zeroMinute = "";
 	if(hour < 10)
 		zeroHour = "0";
 	if(day < 10)
 		zeroDay = "0";
 	if(month < 10)
 		zeroMonth = "0";
-	let minutes = date.getMinutes();
-	return `${zeroMonth}${month}/${zeroDay}${day}/${year} ${zeroHour}${hour}:${minutes}`;
+	if(minutes < 10)
+		zeroMinute = "0";
+	return `${zeroMonth}${month}/${zeroDay}${day}/${year} ${zeroHour}${hour}:${zeroMinute}${minutes}`;
 }
 
 router.get("/:username", async function(req, res) {
@@ -120,7 +123,7 @@ router.get("/:username", async function(req, res) {
 		let nextPostid = null;
 		if(hasNext)
 			nextPostid = posts[posts.length - 1].postid + 1;
-			
+
 		res.status(200).render('user', 
 			{ 
 				title: `${username}'s Blog Posts`, 
