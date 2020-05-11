@@ -45,7 +45,7 @@ router.get("/:username/:postid", async function(req, res) {
 			var writer = new commonmark.HtmlRenderer();
 			var renderedTitle = writer.render(reader.parse(post.title)); 
 			var renderedBody = writer.render(reader.parse(post.body));
-			res.render("oneBlogPost", 
+			res.status(200).render("oneBlogPost", 
 				{"title": post.title, "markdownTitle": renderedTitle, "markdownBody": renderedBody});
   		}
   	});
@@ -118,7 +118,7 @@ router.get("/:username", async function(req, res) {
 			hasNext = false;  
 
 		let nextPostid = posts[posts.length - 1].postid + 1;
-		res.render('user', 
+		res.status(200).render('user', 
 			{ 
 				title: `${username}'s Blog Posts`, 
 				posts: posts, 
