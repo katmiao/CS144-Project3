@@ -61,7 +61,7 @@ router.post("/", async function(req, res)
 		    	);
 
 		    	res.cookie(
-		    		"JWT", 
+		    		"jwt", 
 		    		token, 
 		    		{} //{signed: true, httpOnly: true}
 				);

@@ -35,7 +35,7 @@ function authenticateUser(username, token)
 router.get("/:username", async function(req, res) 
 {
     const username = req.params.username;
-    const token = req.cookies.JWT;
+    const token = req.cookies["jwt"];
 
     // authenticate user
     if(!authenticateUser(username, token))
@@ -59,7 +59,7 @@ router.get("/:username", async function(req, res)
 router.get("/:username/:postid", async function(req, res) 
 {
     let { username, postid } = req.params;
-    let token = req.cookies.JWT;
+    let token = req.cookies["jwt"];
 
     // authenticate user
     if(!authenticateUser(username, token))
@@ -101,7 +101,7 @@ router.post("/:username/:postid", async function(req, res)
     console.log(req.body);
     let { username, postid } = req.params;
     let { title, body } = req.body; 
-    let token = req.cookies.JWT;
+    let token = req.cookies["jwt"];
 
     // authenticate user
     if(!authenticateUser(username, token))
@@ -109,7 +109,7 @@ router.post("/:username/:postid", async function(req, res)
         res.status(401).send("401 Unauthorized: access to the resource is denied");
         return;
     }
-
+    
     // check if the required parameters are supplied
     if(title === undefined || body === undefined)
     {
@@ -162,7 +162,7 @@ router.put("/:username/:postid", async function(req, res)
 {
     let { username, postid } = req.params;
     let { title, body } = req.body; 
-    let token = req.cookies.JWT;
+    let token = req.cookies["jwt"];
 
     // authenticate user
     if(!authenticateUser(username, token))
@@ -225,7 +225,7 @@ router.put("/:username/:postid", async function(req, res)
 router.delete("/:username/:postid", async function(req, res) 
 {
     let { username, postid } = req.params;
-    let token = req.cookies.JWT;
+    let token = req.cookies["jwt"];
 
     // authenticate user
     if(!authenticateUser(username, token))
