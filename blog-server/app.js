@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var blogRouter = require('./routes/blog');
 var loginRouter = require('./routes/login');
 var apiRouter = require('./routes/api');
+var editorRouter = require('./routes/editor');
 var mongoConn = require('./mongoConn');
 
 var app = express();
@@ -22,6 +23,7 @@ mongoConn.initDbConn(function(err)
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
+  app.use('/editor', editorRouter);
   app.use(express.static(path.join(__dirname, 'public')));
 
   // routes
